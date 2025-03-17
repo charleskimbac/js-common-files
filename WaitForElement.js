@@ -1,35 +1,19 @@
-/* eslint-disable no-unused-vars */
+/* v2025.3.16 from https://github.com/charleskimbac/js-common-files
+  console.log alternative so we can easily filter in console with TAG_NAME.
 
-/*  v2025.2.9 from https://github.com/charleskimbac/common-files
-    wait for an element to appear in the DOM, or return it if already present. 
-
-    selector: query selector string
-    timeoutDuration: time (ms) until function will timeout and return null
-    parent: Node to watch (default: document.body)
+  prints:
+  [TAGNAME] purpose
+  [TAGNAME] purpose - ...values
 */
-async function waitForElement(selector, timeoutDuration, parent = document.body) {
-    const element = parent.querySelector(selector);
-    if (element) {
-        return element;
-    }
 
-    return new Promise((resolve) => {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach(() => {
-                const element = parent.querySelector(selector);
-                if (element) {
-                    observer.disconnect();
-                    resolve(element);
-                }
-            });
-        });
-        observer.observe(parent, {childList: true, subtree: true});
+const TAG_NAME = "PREFIX";
 
-        if (timeoutDuration) {
-            setTimeout(() => {
-                observer.disconnect();
-                resolve(null);
-            }, timeoutDuration);
-        }
-    });
+function clog(purpose, ...values) {
+  if (values.length == 0) {
+    console.log(`[${TAG_NAME}]`, purpose); // prints: [TAGNAME] purpose
+  } else {
+    console.log(`[${TAG_NAME}]`, purpose, "-", ...values); // prints: [TAGNAME] purpose - valuesToPrint
+  }
 }
+
+export default clog;
